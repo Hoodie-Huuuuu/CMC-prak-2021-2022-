@@ -1,0 +1,6 @@
+/Users/georgeshpilevoy/Documents/Languages/C#/lab1/lab1/obj/Debug/lab1.csproj.AssemblyReference.cache
+/Users/georgeshpilevoy/Documents/Languages/C#/lab1/lab1/obj/Debug/lab1.csproj.CoreCompileInputs.cache
+/Users/georgeshpilevoy/Documents/Languages/C#/lab1/lab1/bin/Debug/lab1.exe
+/Users/georgeshpilevoy/Documents/Languages/C#/lab1/lab1/bin/Debug/lab1.pdb
+/Users/georgeshpilevoy/Documents/Languages/C#/lab1/lab1/obj/Debug/lab1.exe
+/Users/georgeshpilevoy/Documents/Languages/C#/lab1/lab1/obj/Debug/lab1.pdb
