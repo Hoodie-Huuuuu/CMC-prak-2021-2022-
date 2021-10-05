@@ -1,13 +1,13 @@
 ﻿<Properties StartupConfiguration="{B09CCC3D-372F-45C6-8ED3-A5E592552063}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="lab1/DataItem.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="lab1/V4DataList.cs">
     <Files>
       <File FileName="lab1/DataItem.cs" Line="30" Column="1" />
-      <File FileName="lab1/V4Data.cs" Line="1" Column="1" />
-      <File FileName="lab1/V4DataList.cs" Line="47" Column="54" />
-      <File FileName="lab1/V4DataArray.cs" Line="35" Column="61" />
-      <File FileName="lab1/V4MainCollection.cs" Line="1" Column="1" />
-      <File FileName="lab1/Program.cs" Line="31" Column="57" />
-      <File FileName="lab1/Functions.cs" Line="1" Column="1" />
+      <File FileName="lab1/V4Data.cs" />
+      <File FileName="lab1/V4DataList.cs" Line="1" Column="1" />
+      <File FileName="lab1/V4DataArray.cs" />
+      <File FileName="lab1/V4MainCollection.cs" />
+      <File FileName="lab1/Program.cs" />
+      <File FileName="lab1/Functions.cs" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -15,7 +15,7 @@
           <Node name="lab1" expanded="True">
             <Node name="lab1" expanded="True">
               <Node name="References" expanded="True" />
-              <Node name="DataItem.cs" selected="True" />
+              <Node name="V4DataList.cs" selected="True" />
             </Node>
           </Node>
         </State>

@@ -31,6 +31,7 @@ namespace lab1
         {
             get
             {
+                if (Xstep == 0 || Ystep == 0) return 0;
                 Vector2 temp = new Vector2((Xstep - 1) * Step.X,
                                                             (Ystep-1) * Step.Y);
                 return temp.Length();
