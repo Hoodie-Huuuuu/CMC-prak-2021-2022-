@@ -8,7 +8,7 @@ static class Functions
 {
     public static Vector2 F1(Vector2 vector)
     {
-        return new Vector2(vector.X * 2, vector.Y * 2);
+        return new Vector2(vector.X * vector.X /*X^2*/, vector.X * vector.X + 2* vector.X /* X^2 + 2X */);
     }
 
     public static Vector2 F2(Vector2 vector)

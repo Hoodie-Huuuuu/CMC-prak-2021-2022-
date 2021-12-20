@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 
 
 
+
 class V4DataArray : V4Data
 {
     public int Nx { get; private set; }
@@ -13,20 +14,27 @@ class V4DataArray : V4Data
     public Vector2 Step { get; private set; }
     public Vector2[,] Grid { get; private set; }
 
+
     //массив значений второй производной поля по переменной x в узлах сетки
-    public Vector2[,] SecondDerivativeX { get; set; }
+    public Vector2[,] SecondDerivativeX { get; private set; }
 
 
     //возвращает значение второй производной поля по переменной x в узле сетки
     //с индексами[jx, jy], вычисленное с помощью сплайн интерполяции.
     //null если выход за границы
-    //public Vector2? SecondDerivativeSplineAt(int jx, int jy)
-    //{
+    public Vector2? SecondDerivativeSplineAt(int jx, int jy)
+    {
+        //Выход за пределы
+        if (jx < 0 || jx >= Nx || jy < 0 || jy >= Ny) return null;
 
-    //}
+        return SecondDerivativeX[jy, jx];
+    }
+
 
     //вторая производная поля по переменной x
     //null если выход за границы
+    //jx по оси x 
+    //jy по оси y
     public Vector2? SecondDerivativeCDAt(int jx, int jy)
     {
         //Выход за пределы
@@ -38,23 +46,62 @@ class V4DataArray : V4Data
         if (jx == Nx - 1) right = Nx-1;
 
         //Подсчет производных
-        float F1_secondDer = (Grid[left, jy].X - 2 * Grid[jx, jy].X + Grid[right, jy].X)
+        float F1_secondDer = (Grid[jy, left].X - 2 * Grid[jy, jx].X + Grid[jy, right].X)
                                 / (Step.X * Step.X);
-        float F2_secondDer = (Grid[left, jy].Y - 2 * Grid[jx, jy].Y + Grid[right, jy].Y)
+        float F2_secondDer = (Grid[jy, left].Y - 2 * Grid[jy, jx].Y + Grid[jy, right].Y)
                                 / (Step.X * Step.X);
         return new Vector2(F1_secondDer, F2_secondDer);
     }
 
 
-    [DllImport("path/to/lab3/mylib.dylib")]
-    static extern void say(string message);
-
+    //вторая производная с помощью сплайна
     public bool SecondDerivative()
     {
-        say("chlen");
-        //Console.WriteLine(getpid());
-        return true;
+        if (Nx < 2) return false;
+
+        //интервал сетки по x
+        double[] x = new double[2] { 0, (Nx - 1) * Step.X };
+
+        int size = Nx * 2 * Ny;
+        
+        //одномерный массив значений компонент векторной функции
+        double[] y = new double[size];
+        for (int i=0; i < 2*Ny; i+=2)
+        {
+            for (int j = 0; j < Nx; ++j)
+                y[i * Nx + j] = Grid[i/2, j].X;
+
+            for (int j = 0; j < Nx; ++j)
+                y[(i+1) * Nx + j] = Grid[i/2, j].Y;
+        }
+        
+
+        //одномерный массив для вторых производных
+        double[] res = new double[size];
+
+        //считаем производную
+        bool status = SecondDer(Nx, x, Ny * 2, y, res);
+        
+
+        //проверка и заполнение
+        if (status)
+        {
+            //Инициализация матрциы производных
+            SecondDerivativeX = new Vector2[Ny, Nx];
+
+            for (int i=0; i<Ny; ++i)
+                for (int j=0; j<Nx; ++j)
+                {
+                    //заполняем свойство - матрицу производных
+                    Vector2 Sder = new Vector2((float)res[Nx * i + j], (float)res[Nx * (i + 1) + j]);
+                    this.SecondDerivativeX[i, j] = Sder;
+                }
+        }
+        return status;
     }
+    [DllImport("..\\..\\..\\..\\mylib\\x64\\Debug\\mylib.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern bool SecondDer(int nx, double[] x, int ny, double[] y, double[] res);
+    
 
 
 
@@ -135,7 +182,7 @@ class V4DataArray : V4Data
                             if (res[1] != "[") throw
                                             new FormatException("\"[\" missed");
 
-                            Vector2[,] tempGrid = new Vector2[v4.Nx, v4.Ny];
+                            Vector2[,] tempGrid = new Vector2[v4.Ny, v4.Nx];
                             for (int i = 0; i < v4.Nx; ++i)
                             {
                                 for(int j = 0; j < v4.Ny; ++j)
@@ -145,7 +192,7 @@ class V4DataArray : V4Data
 
                                     line = line.Trim(new Char[] { '<', '>' });
                                     string[] vals = line.Split(' ');
-                                    tempGrid[i, j] = new Vector2(float.Parse(vals[0]),
+                                    tempGrid[j, i] = new Vector2(float.Parse(vals[0]),
                                                                  float.Parse(vals[1]));
                                 }
                             }
@@ -184,11 +231,11 @@ class V4DataArray : V4Data
         Step = step;
         this.Nx = NX;
         this.Ny = NY;
-        Grid = new Vector2[Nx, Ny];
+        Grid = new Vector2[Ny, Nx];
 
         for (int i = 0; i < Nx; ++i)
             for (int j = 0; j < Ny; ++j)
-                Grid[i, j] = F(new Vector2(i * Step.X, j * Step.Y));
+                Grid[j, i] = F(new Vector2(i * Step.X, j * Step.Y));
     }
 
     public override int Count { get { return Grid.Length; } }
@@ -206,19 +253,21 @@ class V4DataArray : V4Data
     public override string ToString()
     {
         return "Type: " + this.GetType() + "\nName: " + Name + "\nDate: " +
-            Date.ToString() + "\nXstep: " + Nx + "\nYstep: " + Ny +
+            Date.ToString() + "\nNx: " + Nx + "\nNy: " + Ny +
             "\nStep: " + Step.ToString() + '\n';
     }
 
     public override string ToLongString(string format)
     {
         string res = this.ToString() + '\n';
-        for (int i = 0; i < Nx; ++i)
-            for (int j = 0; j < Ny; ++j)
+
+        res += "Point         Value         Abs   \n";
+        for (int i = 0; i < Ny; ++i)
+            for (int j = 0; j < Nx; ++j)
             {
-                res += "Point: " + '<' + i * Step.X + ", " + j * Step.Y +
-                    ">\nValue: " + Grid[i, j].ToString(format) + "\nAbs: "
-                    + Vector2.Abs(Grid[i, j]).ToString(format) + "\n\n";
+                res += "<" + (j * Step.X).ToString(format) + ", " + (i * Step.Y).ToString(format) + ">  " +
+                    Grid[i, j].ToString(format) + "  "
+                    + Vector2.Abs(Grid[i, j]).ToString(format) + "\n";
             }
         return res;
     }
@@ -232,7 +281,7 @@ class V4DataArray : V4Data
             {
                 Vector2 point = new Vector2(i * arData.Step.X,
                                                         j * arData.Step.Y);
-                res.Add(new DataItem(point, arData.Grid[i, j]));
+                res.Add(new DataItem(point, arData.Grid[j, i]));
             }
                     
         return res;
@@ -245,9 +294,9 @@ class V4DataArray : V4Data
         //перечисляет все данные на сетке как экземпляры DataItem − для каждого
         //узла сетки создается экземпляр DataItem с координатами узла сетки и
         //значением типа Vector2 в узле сетки.
-        for (int i = 0; i < Nx; ++i)
-            for (int j = 0; j < Ny; ++j)
-                yield return new DataItem(new Vector2(i * Step.X, j * Step.Y),
+        for (int i = 0; i < Ny; ++i)
+            for (int j = 0; j < Nx; ++j)
+                yield return new DataItem(new Vector2(j * Step.X, i * Step.Y),
                                                                     Grid[i, j]);  
     }
 }

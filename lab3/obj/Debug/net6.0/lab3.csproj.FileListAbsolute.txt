@@ -1,0 +1,15 @@
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\bin\Debug\net6.0\lab3.exe
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\bin\Debug\net6.0\lab3.deps.json
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\bin\Debug\net6.0\lab3.runtimeconfig.json
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\bin\Debug\net6.0\lab3.dll
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\bin\Debug\net6.0\ref\lab3.dll
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\bin\Debug\net6.0\lab3.pdb
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\obj\Debug\net6.0\lab3.csproj.AssemblyReference.cache
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\obj\Debug\net6.0\lab3.GeneratedMSBuildEditorConfig.editorconfig
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\obj\Debug\net6.0\lab3.AssemblyInfoInputs.cache
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\obj\Debug\net6.0\lab3.AssemblyInfo.cs
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\obj\Debug\net6.0\lab3.csproj.CoreCompileInputs.cache
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\obj\Debug\net6.0\lab3.dll
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\obj\Debug\net6.0\ref\lab3.dll
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\obj\Debug\net6.0\lab3.pdb
+D:\Program Files (x86)\VisualStudio\repos\CMC-prak-2021-2022-\lab3\obj\Debug\net6.0\lab3.genruntimeconfig.cache
