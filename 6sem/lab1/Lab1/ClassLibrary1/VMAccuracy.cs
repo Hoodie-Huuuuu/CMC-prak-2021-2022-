@@ -8,17 +8,6 @@ namespace ClassLibrary1
 {
     public class VMAccuracy
     {
-        public VMAccuracy()
-        {
-            Params = new VMGrid();
-            FunctionType = VMF.unmatched;
-            MaxDif = 0;
-            MaxDifArg = 0;
-            MaxDifValue_VML_HA = 0;
-            MaxDifValue_VML_EP = 0;
-            more_info = "";
-
-        }
         public VMAccuracy(VMGrid grid, VMF func, double max_dif, double max_dif_arg, double ha, double ep)
         {
             Params = grid;
@@ -27,7 +16,6 @@ namespace ClassLibrary1
             MaxDifArg = max_dif_arg;
             MaxDifValue_VML_HA = ha;
             MaxDifValue_VML_EP = ep;
-            more_info = "";
         }
         //параметры сетки
         public VMGrid Params { get; set; }
@@ -49,14 +37,13 @@ namespace ClassLibrary1
         public double MaxDifValue_VML_EP { get; set; }
 
         public override string ToString() => Params.ToString() + $"name func: {NameFunc}";
-        public string StrView { get => ToString(); }
+        public static explicit operator String(VMAccuracy b) => b.ToString();
 
-        //дополнительная информация
-        private string more_info;
+        ////дополнительная информация
+
         public string MoreInfo
         {
             get => $"MaxDifArg: {MaxDifArg}\nValue VML_HA: {MaxDifValue_VML_HA}\nValue VML_EP: {MaxDifValue_VML_EP}";
-            set => more_info = value;
         }
 
         //возвращает имя функции
@@ -77,7 +64,6 @@ namespace ClassLibrary1
                 }
                 return "unmachted";
             }
-
         }
     }
 }

@@ -5,23 +5,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Closing="Window_Closed"
+        Loaded="Window_Loaded">
 
-    
+
+    <!-- Resources -->
+    <Window.Resources>
+        <DataTemplate x:Key="AccuracyTemplate">
+            <StackPanel>
+                <TextBlock Text="{Binding Benchmark.SelectedAccuracy}"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="TimeTemplate">
+            <StackPanel>
+                <TextBlock Text="{Binding Benchmark.SelectedTime}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
 
 
-     
-
-     <Grid>
+    <Grid>
+        <!-- Grid Defenition -->
         <Grid.RowDefinitions>
             <RowDefinition Height="4*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
+
+        <!-- Menu -->
         <Menu Height="20" VerticalAlignment="Top" Grid.ColumnSpan="3">
             <MenuItem FontSize="15" Header="File">
                 <MenuItem Header="New" Click="MenuItem_New_Click"/>
@@ -33,48 +50,55 @@
                 <MenuItem Header="AddVMAccuracy" Name="addAcc" Click="addAcc_Click"/>
             </MenuItem>
         </Menu>
-        <Label Content="Accuracy" HorizontalAlignment="Center" Margin="0,26,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
-        <ListBox Margin="10,60,10,12" ItemsSource="{Binding Benchmark.Accuracies}" SelectedItem="{Binding Benchmark.SelectedAccuracy}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Path=StrView}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <TextBlock  Grid.Column="0" HorizontalAlignment="Center" Grid.Row="1" Text="{Binding Benchmark.SelectedAccuracy.MoreInfo}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-        <Label Content="Time" Grid.Column="1" HorizontalAlignment="Center" Margin="0,26,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" RenderTransformOrigin="0.558,-0.117"/>
-        <ListBox Margin="10,60,10,0" Grid.Column="1" ItemsSource="{Binding Benchmark.TimeResults}"
-                 SelectedItem="{Binding Benchmark.SelectedTime}" Height="275" VerticalAlignment="Top">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Path=StrView}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <TextBlock Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" Text="{Binding Benchmark.SelectedTime.MoreInfo}" TextWrapping="Wrap" VerticalAlignment="Center"/>
 
-        <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
-            <Label Content="Выберите функцю" FontWeight="Bold"/>
-            <ComboBox Name="combo1" ItemsSource="{Binding ListFunc}" 
-                SelectedItem="{Binding SelectedFunc}"
-                Grid.Column="2" HorizontalAlignment="Center" Margin="0,0,40,30" Width="125">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Path=FuncName}"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
+        <!-- ListBox Accuracies -->
+        <Label Content="Accuracy" HorizontalAlignment="Center"
+               Margin="0,26,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
+        <ListBox Margin="10,60,10,12" ItemsSource="{Binding Benchmark.Accuracies}"
+                 SelectedItem="{Binding SelectedAccuracy}"
+                 ItemTemplate="{StaticResource AccuracyTemplate}"/>
+
+        <!-- More info selected accuracy-->
+        <TextBlock  Grid.Column="0"  HorizontalAlignment="Center" Grid.Row="1"
+                    Text="{Binding SelectedAccuracy.MoreInfo}"
+                    TextWrapping="Wrap" VerticalAlignment="Center"/>
+
+
+        <!-- ListBox Time ///////////////////////////////////////-->
+        <Label Content="Time" Grid.Column="1" HorizontalAlignment="Center"
+               Margin="0,26,0,0" VerticalAlignment="Top" FontSize="18"
+               FontWeight="Bold" RenderTransformOrigin="0.558,-0.117"/>
+        <ListBox Margin="10,60,10,0" Grid.Column="1" ItemsSource="{Binding Benchmark.TimeResults}"
+                 SelectedItem="{Binding SelectedTime}" Height="275" VerticalAlignment="Top"
+                 ItemTemplate="{StaticResource TimeTemplate}"/>
+
+        <!-- More info selected time-->
+        <TextBlock Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1"
+                   Text="{Binding SelectedTime.MoreInfo}" TextWrapping="Wrap"
+                   VerticalAlignment="Center" Height="67"/>
+
+        <!-- Panel for user -->
+        <StackPanel Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left"
+                    VerticalAlignment="Center" Height="261" Width="247" Margin="10,0,0,0">
+            <Label Content="Выберите функцю" FontWeight="Bold" />
+
+            <!-- Choose function -->
+            <ComboBox Name="combo1"  SelectedItem="{Binding SelectedFunc}"
+                Grid.Column="2" HorizontalAlignment="Center" Margin="0,0,40,30" Width="125"
+                IsSynchronizedWithCurrentItem="True"/>
+
+            <!-- Number of nodes-->
             <Label Content="Введите количество узлов" FontWeight="Bold"/>
-            <TextBox Text="" Name="TextBox1" PreviewTextInput="TextBox1_PreviewTextInput" TextChanged="TextBox1_TextChanged"/>
+            <TextBox Text="" Name="TextBox_Nodes" PreviewTextInput="TextBox_Nodes_Input" TextChanged="TextBox_Nodes_TextChanged"/>
+
+            <!-- Enter start of interval -->
             <Label Content="Введите начало отрезка" FontWeight="Bold"/>
-            <TextBox Text="" Name="TextBox2" PreviewTextInput="TextBox2_PreviewTextInput"  TextChanged="TextBox2_TextChanged"/>
+            <TextBox Text="" Name="TextBox_Start" PreviewTextInput="TextBox_Start_End_Input"  TextChanged="TextBox_Start_TextChanged"/>
+
+            <!-- Enter end of interval -->
             <Label Content="Введите конец отрезка" FontWeight="Bold"/>
-            <TextBox Text="" Name="TextBox3" PreviewTextInput="TextBox2_PreviewTextInput" TextChanged="TextBox3_TextChanged"/>
+            <TextBox Text="" Name="TextBox_End" PreviewTextInput="TextBox_Start_End_Input" TextChanged="TextBox_End_TextChanged"/>
         </StackPanel>
-        <TextBlock Text="{Binding WarningChanged}" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="Red" FontSize="16" FontWeight="Bold"/>
+        <TextBlock Text="{Binding ChangedString}" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="Red" FontSize="16" FontWeight="Bold"/>
     </Grid>
 </Window>

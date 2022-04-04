@@ -11,38 +11,57 @@ using System.Collections.ObjectModel;
 
 namespace WpfApp1
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
+    //окно
     public partial class MainWindow : Window
     {
+        //сетка и ViewData 
         public ViewData Vdata { get; set; }
         VMGrid grid;
 
+        //конструктор
         public MainWindow()
         {
-            
+            //инициализация компонентов
             InitializeComponent();
             this.DataContext = new ViewData();
-
+            
             grid = new VMGrid();
             Vdata = (ViewData)DataContext;
+
+            //пока не выбрали функцию нельзя добавлять элементы
             addTime.IsEnabled = false;
             addAcc.IsEnabled = false;
         }
 
 
-        //// // // // // // // // // // // // // // /// /// / / / /
-        //private void Window_Closed(object sender, EventArgs e)
-        //{
+        //обработчик закрытия окна (спросить про изменения пользователя)
+        private void Window_Closed(object sender, CancelEventArgs e)
+        {
+            if (Vdata.Changed == true)
+            {
+                MessageBoxResult res = MessageBox.Show("Сохранить файл?", "Изменения не сохранены", MessageBoxButton.YesNoCancel);
+                if (res == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        var file = new Microsoft.Win32.SaveFileDialog();
+                        if (file.ShowDialog() == true) Vdata.Save(file.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Exception: {ex.Message}.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else if (res == MessageBoxResult.Cancel) return;
+            }
+        }
 
-        //}
-
-        ///// / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-        //private void Window_Loaded(object sender, RoutedEventArgs e)
-        //{
-            
-        //}
+        
+        //обработичк загрузки окна
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            combo1.ItemsSource = Enum.GetValues(typeof(VMF));
+        }
 
 
         //private void Button_Click(object sender, RoutedEventArgs e)
@@ -51,7 +70,9 @@ namespace WpfApp1
         //    MessageBox.Show(Vdata.B.Times.Count.ToString());
         //}
 
-        private void TextBox1_PreviewTextInput(object sender, TextCompositionEventArgs e)
+
+        //узлы
+        private void TextBox_Nodes_Input(object sender, TextCompositionEventArgs e)
         {
             int val;
             if (!Int32.TryParse(e.Text, out val))
@@ -59,7 +80,10 @@ namespace WpfApp1
                 e.Handled = true; // отклоняем ввод
             }
         }
-        private void TextBox2_PreviewTextInput(object sender, TextCompositionEventArgs e)
+
+
+        //start end
+        private void TextBox_Start_End_Input(object sender, TextCompositionEventArgs e)
         {
             int val;
             if (!Int32.TryParse(e.Text, out val) && e.Text != ",")
@@ -68,9 +92,10 @@ namespace WpfApp1
             }
         }
 
-        private void TextBox1_TextChanged(object sender, TextChangedEventArgs e)
+        
+        private void TextBox_Nodes_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if ((TextBox1.Text.Length == 0) || (TextBox2.Text.Length == 0) || (TextBox3.Text.Length == 0))
+            if ((TextBox_Nodes.Text.Length == 0) || (TextBox_Start.Text.Length == 0) || (TextBox_End.Text.Length == 0))
             {
                 addTime.IsEnabled = false;
                 addAcc.IsEnabled = false;
@@ -82,7 +107,7 @@ namespace WpfApp1
             }
             try
             {
-                grid.Length = Convert.ToInt32(TextBox1.Text);
+                grid.Length = Convert.ToInt32(TextBox_Nodes.Text);
             }
             catch (Exception ex)
             {
@@ -91,9 +116,9 @@ namespace WpfApp1
 
         }
 
-        private void TextBox2_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_Start_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if ((TextBox1.Text.Length == 0) || (TextBox2.Text.Length == 0) || (TextBox3.Text.Length == 0))
+            if ((TextBox_Nodes.Text.Length == 0) || (TextBox_Start.Text.Length == 0) || (TextBox_End.Text.Length == 0))
             {
                 addTime.IsEnabled = false;
                 addAcc.IsEnabled = false;
@@ -105,7 +130,7 @@ namespace WpfApp1
             }
             try
             {
-                grid.Start = Convert.ToSingle(TextBox2.Text);
+                grid.Start = Convert.ToSingle(TextBox_Start.Text);
             }
             catch (Exception ex)
             {
@@ -113,9 +138,9 @@ namespace WpfApp1
             }
         }
 
-        private void TextBox3_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_End_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if ((TextBox1.Text.Length == 0) || (TextBox2.Text.Length == 0) || (TextBox3.Text.Length == 0))
+            if ((TextBox_Nodes.Text.Length == 0) || (TextBox_Start.Text.Length == 0) || (TextBox_End.Text.Length == 0))
             {
                 addTime.IsEnabled = false;
                 addAcc.IsEnabled = false;
@@ -127,28 +152,29 @@ namespace WpfApp1
             }
             try
             {
-                grid.End = Convert.ToSingle(TextBox3.Text);
+                grid.End = Convert.ToSingle(TextBox_End.Text);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
+
 
         //добавиТЬ Time
         private void addTime_Click(object sender, RoutedEventArgs e)
         {
-            if (Vdata.SelectedFunc.FuncType == VMF.unmatched) MessageBox.Show("Выберите функцию");
+            if (Vdata.SelectedFunc == null) MessageBox.Show("Выберите функцию");
             else Vdata.AddVMTime(grid);
         }
 
         //добавить Accuracy
         private void addAcc_Click(object sender, RoutedEventArgs e)
         {
-            if (Vdata.SelectedFunc.FuncType == VMF.unmatched) MessageBox.Show("Выберите функцию");
+            if (Vdata.SelectedFunc == null) MessageBox.Show("Выберите функцию");
             else Vdata.AddVMAccuracy(grid);
-
         }
+
 
         //New
         private void MenuItem_New_Click(object sender, RoutedEventArgs e)
@@ -161,9 +187,9 @@ namespace WpfApp1
                     if (res == MessageBoxResult.Yes) MenuItem_Save_Click(sender, e);
                     else if (res == MessageBoxResult.Cancel) return;
                 }
-                if (Vdata.Benchmark.SelectedTime != null) Vdata.Benchmark.SelectedTime.MoreInfo = "";
+                //if (Vdata.Benchmark.SelectedTime != null) Vdata.Benchmark.SelectedTime.MoreInfo = "";
                 Vdata.Benchmark.TimeResults.Clear();
-                if (Vdata.Benchmark.SelectedAccuracy != null) Vdata.Benchmark.SelectedAccuracy.MoreInfo = "";
+                //if (Vdata.Benchmark.SelectedAccuracy != null) Vdata.Benchmark.SelectedAccuracy.MoreInfo = "";
                 Vdata.Benchmark.Accuracies.Clear();
             }
             catch (Exception ex)
@@ -212,5 +238,10 @@ namespace WpfApp1
 
         public void RaisePropertyChanged([CallerMemberName] string propertyName = "") =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        private void Window_Closed_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

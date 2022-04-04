@@ -8,35 +8,11 @@ using System.Runtime.CompilerServices;
 
 namespace ClassLibrary1
 {
-    public class VMBenchmark : INotifyPropertyChanged
+    public class VMBenchmark
     {
-        private VMTime curr_time;
-        private VMAccuracy curr_acc;
-        public VMTime SelectedTime
-        {
-            get => curr_time;
-            set
-            {
-                curr_time = value;
-                RaisePropertyChanged(nameof(SelectedTime));
-            }
-        }
-
-        public VMAccuracy SelectedAccuracy
-        {
-            get => curr_acc;
-            set
-            {
-                curr_acc = value;
-                RaisePropertyChanged(nameof(SelectedAccuracy));
-            }
-        }
-
-
+        
         public VMBenchmark()
         {
-            curr_time = new VMTime();
-            curr_acc = new VMAccuracy();
             TimeResults = new ObservableCollection<VMTime>();
             Accuracies = new ObservableCollection<VMAccuracy>();
         }
@@ -64,23 +40,23 @@ namespace ClassLibrary1
             double[] res_c = new double[grid.Length];
             double[] res_time = new double[3];
             //вызов функции
-            int status = GlobalFunc(grid.Length, args, res_mkl_ha, res_mkl_ep, res_c, res_time, func_type);
+            int status = GlobalFunc(grid.Length, args, res_mkl_ha, res_mkl_ep,
+                                                                res_c, res_time, func_type);
             if (status != 0) throw new Exception($"GlobalFunc failed");
 
             //новый элемент VMTime
-            VMTime new_item = new VMTime();
-            new_item.Params = grid;
-            new_item.FunctionType = func_type;
-            new_item.VML_EP_Time = res_time[1];
-            new_item.VML_HA_Time = res_time[0];
-            new_item.Time_c = res_time[2];
-            new_item.VML_EP_Coef = new_item.VML_EP_Time / new_item.Time_c;
-            new_item.VML_HA_Coef = new_item.VML_HA_Coef / new_item.Time_c;
+            var VML_EP_Coef = res_time[1] / res_time[2];
+            var VML_HA_Coef = res_time[0] / res_time[2];
+
+            VMTime new_item = new VMTime(grid, func_type, res_time[0], res_time[2],
+                                         res_time[1], VML_HA_Coef, VML_EP_Coef);
 
             TimeResults.Add(new_item);
         }
         [DllImport("..\\..\\..\\..\\DllLab1\\x64\\Debug\\DllLab1.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GlobalFunc(int n_args, double[] args, double[] res_mkl_ha, double[] res_mkl_ep, double[] res_c, double[] res_time, VMF func);
+        public static extern int GlobalFunc(int n_args, double[] args, double[] res_mkl_ha,
+                                                        double[] res_mkl_ep, double[] res_c,
+                                                                double[] res_time, VMF func);
 
         //в этом методе выполняются вычисления, создается и
         //добавляется в коллекцию ObservableCollection<VMAccuracy> новый элемент
@@ -98,30 +74,25 @@ namespace ClassLibrary1
             double[] res_c = new double[grid.Length];
             double[] res_time = new double[3];
             //вызов функции
-            int status = GlobalFunc(grid.Length, args, res_mkl_ha, res_mkl_ep, res_c, res_time, func_type);
+            int status = GlobalFunc(grid.Length, args, res_mkl_ha, res_mkl_ep, 
+                                                                   res_c, res_time, func_type);
             if (status != 0) throw new Exception($"GlobalFunc failed");
 
             //новый элемент VMAccuracy
-            VMAccuracy new_item = new VMAccuracy();
-            new_item.Params = grid;
-            new_item.FunctionType = func_type;
-
-            new_item.MaxDif = 0;
+            double MaxDif = 0;
             int idx = 0;
             for (int i = 0; i < grid.Length; ++i)
             {
                 double tmp = Math.Abs(res_mkl_ha[i] - res_mkl_ep[i]);
-                if (tmp > new_item.MaxDif)
+                if (tmp > MaxDif)
                 {
                     idx = i;
-                    new_item.MaxDif = tmp;
+                    MaxDif = tmp;
                 }
             }
 
-            new_item.MaxDifArg = args[idx];
-            new_item.MaxDifValue_VML_HA = res_mkl_ha[idx];
-            new_item.MaxDifValue_VML_EP = res_mkl_ep[idx];
-
+            VMAccuracy new_item = new VMAccuracy(grid, func_type, MaxDif,
+                                                args[idx], res_mkl_ha[idx], res_mkl_ep[idx]);
             Accuracies.Add(new_item);
         }
 
@@ -135,11 +106,5 @@ namespace ClassLibrary1
         {
             get => TimeResults.Min(item => item.VML_EP_Coef);
         }
-
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void RaisePropertyChanged([CallerMemberName] string propertyName = "") =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
     }
 }

@@ -7,72 +7,58 @@ using System.IO;
 using ClassLibrary1;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 
 namespace WpfApp1
 {
     public class ViewData : INotifyPropertyChanged
     {
+        //конструктор
         public ViewData()
         {
-            curr_func = new VMfString(VMF.unmatched, "unmachted");
-            _benchmark = new VMBenchmark();
-            Functions = new ObservableCollection<VMfString>() {
-                new VMfString(VMF.vmsErf, "vmsErf"),
-                new VMfString(VMF.vmdErf, "vmdErf"),
-                new VMfString(VMF.vmsExp, "vmsExp"),
-                new VMfString(VMF.vmdExp, "vmdExp")
-            };
+            SelectedFunc = null;
+            Benchmark = new VMBenchmark();
+
+            //подписка на изменение коллекций
+            Benchmark.TimeResults.CollectionChanged += new NotifyCollectionChangedEventHandler(Handler_CollectionChanged_Time);
+            Benchmark.Accuracies.CollectionChanged += new NotifyCollectionChangedEventHandler(Handler_CollectionChanged_Ac);
         }
+
+        //событие изменения свойства
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void RaisePropertyChanged([CallerMemberName] string propertyName = "") =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        //обработчики изменения - поднимают событие изменения свойства
+        /////////////////////////
+        void Handler_CollectionChanged_Time(object? sender, NotifyCollectionChangedEventArgs e) => RaisePropertyChanged(nameof(VMTime));
+        void Handler_CollectionChanged_Ac(object? sender, NotifyCollectionChangedEventArgs e) => RaisePropertyChanged(nameof(VMAccuracy));
+
 
         //свойства
-        //выбранная функция
-        public ObservableCollection<VMfString> Functions;
-
-        private VMfString curr_func;
-        public VMfString SelectedFunc
-        {
-            get => curr_func;
-            set
-            {
-                curr_func = value;
-                RaisePropertyChanged(nameof(SelectedFunc));
-            }
-        }
+        public VMF? SelectedFunc;
+        public VMTime? SelectedTime { get; set; }
+        public VMAccuracy? SelectedAccuracy { get; set; }
 
 
-
-        private VMBenchmark _benchmark;
-        public VMBenchmark Benchmark
-        {
-            get => _benchmark;
-
-            set
-            {
-                Benchmark = value;
-                RaisePropertyChanged(nameof(Benchmark));
-            }
-        }
+        public VMBenchmark Benchmark;
 
         public bool Changed = false;
-        public string WarningChanged
-        {
-            get
-            {
-                if (Changed) return "Collection has been Changed";
-                else return "";
-            }
-        }
+        public string ChangedString = "";
+        
 
-
-        //методы
+        //добавить элемент в коллекцию времени
         public void AddVMTime(VMGrid grid)
         {
             try
             {
-                Benchmark.AddVMTime(SelectedFunc.FuncType, grid);
-                RaisePropertyChanged(nameof(AddVMTime));
+                //здесь атвоматически поднимется PropertyCHanged в обработчике
+                Benchmark.AddVMTime((VMF)SelectedFunc, grid);
+                
                 Changed = true;
+                ChangedString = "Collection has been Changed";
+                RaisePropertyChanged(nameof(ChangedString));
             }
             catch (Exception e)
             {
@@ -80,13 +66,18 @@ namespace WpfApp1
             }
         }
 
+
+        //добавить элемент в коллекцию точности
         public void AddVMAccuracy(VMGrid grid)
         {
             try
             {
-                Benchmark.AddVMAccuracy(SelectedFunc.FuncType, grid);
-                RaisePropertyChanged(nameof(AddVMTime));
+                //здесь атвоматически поднимется PropertyCHanged в обработчике
+                Benchmark.AddVMAccuracy((VMF)SelectedFunc, grid);
+
                 Changed = true;
+                ChangedString = "Collection has been Changed";
+                RaisePropertyChanged(nameof(ChangedString));
             }
             catch (Exception e)
             {
@@ -151,36 +142,44 @@ namespace WpfApp1
                     int count1 = Int32.Parse(reader.ReadLine());
                     for (int i = 0; i < count1; i++)
                     {
-                        VMTime item = new VMTime();
+                        //параметры сетки
                         int GridLength = Int32.Parse(reader.ReadLine());
                         double GridStart = double.Parse(reader.ReadLine());
                         double GridEnd = double.Parse(reader.ReadLine());
                         double GridStep = double.Parse(reader.ReadLine());
-                        VMF Function_type = (VMF)int.Parse(reader.ReadLine());
+                        
                         VMGrid Grid = new VMGrid(GridLength, (float)GridStart, (float)GridEnd, (float)GridStep);
-                        item.Params = Grid;
-                        item.VML_HA_Time = double.Parse(reader.ReadLine());
-                        item.VML_EP_Time = double.Parse(reader.ReadLine());
-                        item.Time_c = double.Parse(reader.ReadLine());
-                        item.VML_HA_Coef = double.Parse(reader.ReadLine());
-                        item.VML_EP_Coef = double.Parse(reader.ReadLine());
+
+                        //параметры VMTime
+                        VMF Function_type = (VMF)int.Parse(reader.ReadLine());
+                        var VML_HA_Time = double.Parse(reader.ReadLine());
+                        var VML_EP_Time = double.Parse(reader.ReadLine());
+                        var Time_c = double.Parse(reader.ReadLine());
+                        var VML_HA_Coef = double.Parse(reader.ReadLine());
+                        var VML_EP_Coef = double.Parse(reader.ReadLine());
+
+                        VMTime item = new VMTime(Grid, Function_type, VML_HA_Time, Time_c, VML_EP_Time, VML_HA_Coef, VML_EP_Coef);
                         Benchmark.TimeResults.Add(item);
                     }
                     int count2 = Int32.Parse(reader.ReadLine());
                     for (int i = 0; i < count2; i++)
                     {
-                        VMAccuracy item = new VMAccuracy();
+                        //параметры сетки
                         int GridLength = Int32.Parse(reader.ReadLine());
                         double GridStart = double.Parse(reader.ReadLine());
                         double GridEnd = double.Parse(reader.ReadLine());
                         double GridStep = double.Parse(reader.ReadLine());
-                        VMF Function_type = (VMF)int.Parse(reader.ReadLine());
+                        
                         VMGrid Grid = new VMGrid(GridLength, (float)GridStart, (float)GridEnd, (float)GridStep);
-                        item.Params = Grid;
-                        item.MaxDif = double.Parse(reader.ReadLine());
-                        item.MaxDifArg = double.Parse(reader.ReadLine());
-                        item.MaxDifValue_VML_HA = double.Parse(reader.ReadLine());
-                        item.MaxDifValue_VML_EP = double.Parse(reader.ReadLine());
+
+                        //параметры VMAccuracy
+                        VMF Function_type = (VMF)int.Parse(reader.ReadLine());
+                        var MaxDif = double.Parse(reader.ReadLine());
+                        var MaxDifArg = double.Parse(reader.ReadLine());
+                        var MaxDifValue_VML_HA = double.Parse(reader.ReadLine());
+                        var MaxDifValue_VML_EP = double.Parse(reader.ReadLine());
+
+                        VMAccuracy item = new VMAccuracy(Grid, Function_type, MaxDif, MaxDifArg, MaxDifValue_VML_HA, MaxDifValue_VML_EP);
                         Benchmark.Accuracies.Add(item);
                     }
                 }
@@ -192,10 +191,5 @@ namespace WpfApp1
             }
             return true;
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void RaisePropertyChanged([CallerMemberName] string propertyName = "") =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
     }
 }
