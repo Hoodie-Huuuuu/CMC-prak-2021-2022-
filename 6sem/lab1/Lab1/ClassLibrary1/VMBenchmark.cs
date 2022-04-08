@@ -8,9 +8,8 @@ using System.Runtime.CompilerServices;
 
 namespace ClassLibrary1
 {
-    public class VMBenchmark
+    public class VMBenchmark : INotifyPropertyChanged
     {
-        
         public VMBenchmark()
         {
             TimeResults = new ObservableCollection<VMTime>();
@@ -29,6 +28,7 @@ namespace ClassLibrary1
         //ObservableCollection<VMTime> новый элемент VMTime;
         public void AddVMTime(VMF func_type, VMGrid grid)
         {
+           
             //сетка 
             double[] args = new double[grid.Length];
             for (int i = 0; i < grid.Length; i++)
@@ -52,8 +52,11 @@ namespace ClassLibrary1
                                          res_time[1], VML_HA_Coef, VML_EP_Coef);
 
             TimeResults.Add(new_item);
+            //MessageBox.Show(grid.ToString());
+            
+
         }
-        [DllImport("..\\..\\..\\..\\DllLab1\\x64\\Debug\\DllLab1.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("..\\..\\..\\..\\x64\\Debug\\Dll1.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GlobalFunc(int n_args, double[] args, double[] res_mkl_ha,
                                                         double[] res_mkl_ep, double[] res_c,
                                                                 double[] res_time, VMF func);
@@ -97,14 +100,21 @@ namespace ClassLibrary1
         }
 
         //min коэфициент отоншения времен из всей коллекции
-        public double MinCoefRatio_VML_HA
+        public string MinCoefsRatio
         {
-            get => TimeResults.Min(item => item.VML_HA_Coef);
+            get
+            {
+                if (TimeResults.Count != 0)
+                    return $"Min Ha Time: {TimeResults.Min(item => item.VML_HA_Coef).ToString()}\n" +
+                        $"Min Ep Time: {TimeResults.Min(item => item.VML_EP_Coef).ToString()}\n";
+                return "Min Time: Collection is Empty";
+            }
         }
 
-        public double MinCoefRatio_VML_EP
-        {
-            get => TimeResults.Min(item => item.VML_EP_Coef);
-        }
+        //событие изменения свойства
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void RaisePropertyChanged([CallerMemberName] string propertyName = "") =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
     }
 }

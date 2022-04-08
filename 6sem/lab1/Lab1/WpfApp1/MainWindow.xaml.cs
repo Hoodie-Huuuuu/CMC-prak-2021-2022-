@@ -6,28 +6,46 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
 using System.Collections.ObjectModel;
+using System.Windows.Data;
 
 namespace WpfApp1
 {
+    //пользовательский преобразователь типа VMTime
+    [ValueConversion(typeof(VMTime), typeof(string))]
+    public class TimeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) => value.ToString();
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) => value;
+    }
+
+    //пользовательский преобразователь типа VM
+    [ValueConversion(typeof(VMAccuracy), typeof(string))]
+    public class AccuracyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) => value.ToString();
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) => value;
+    }
+
+    
+
     //окно
     public partial class MainWindow : Window
     {
         //сетка и ViewData 
         public ViewData Vdata { get; set; }
-        VMGrid grid;
+        public VMGrid grid { get; set; }
 
         //конструктор
         public MainWindow()
         {
+            Vdata = new ViewData();
+            grid = new VMGrid();
+
             //инициализация компонентов
             InitializeComponent();
-            this.DataContext = new ViewData();
+            this.DataContext = Vdata;
             
-            grid = new VMGrid();
-            Vdata = (ViewData)DataContext;
-
             //пока не выбрали функцию нельзя добавлять элементы
             addTime.IsEnabled = false;
             addAcc.IsEnabled = false;
@@ -62,13 +80,6 @@ namespace WpfApp1
         {
             combo1.ItemsSource = Enum.GetValues(typeof(VMF));
         }
-
-
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Vdata = Vdata.A.selectedFunc.func;
-        //    MessageBox.Show(Vdata.B.Times.Count.ToString());
-        //}
 
 
         //узлы
@@ -186,11 +197,15 @@ namespace WpfApp1
                     MessageBoxResult res = MessageBox.Show("Сохранить файл?", "Изменения не сохранены", MessageBoxButton.YesNoCancel);
                     if (res == MessageBoxResult.Yes) MenuItem_Save_Click(sender, e);
                     else if (res == MessageBoxResult.Cancel) return;
-                }
-                //if (Vdata.Benchmark.SelectedTime != null) Vdata.Benchmark.SelectedTime.MoreInfo = "";
+                }        
                 Vdata.Benchmark.TimeResults.Clear();
-                //if (Vdata.Benchmark.SelectedAccuracy != null) Vdata.Benchmark.SelectedAccuracy.MoreInfo = "";
                 Vdata.Benchmark.Accuracies.Clear();
+
+                //известить приложение
+                Vdata.Changed = false;
+                Vdata.ChangedString = "New";
+                Vdata.RaisePropertyChanged(nameof(Vdata.ChangedString));
+                Vdata.Benchmark.RaisePropertyChanged(nameof(Vdata.Benchmark.MinCoefsRatio));
             }
             catch (Exception ex)
             {
@@ -213,7 +228,6 @@ namespace WpfApp1
             if (file.ShowDialog() == true)
             {
                 Vdata.Load(file.FileName);
-                //DataContext = null;
                 DataContext = Vdata;
             }
 
@@ -239,9 +253,5 @@ namespace WpfApp1
         public void RaisePropertyChanged([CallerMemberName] string propertyName = "") =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        private void Window_Closed_1(object sender, EventArgs e)
-        {
-
-        }
     }
 }

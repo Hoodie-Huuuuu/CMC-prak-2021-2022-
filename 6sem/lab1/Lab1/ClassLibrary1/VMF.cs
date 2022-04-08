@@ -10,7 +10,5 @@ namespace ClassLibrary1
         vmsErf = 2,
         vmdErf = 3
     }
-
-    
 }
 

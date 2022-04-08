@@ -18,6 +18,7 @@ namespace WpfApp1
         public ViewData()
         {
             SelectedFunc = null;
+            ChangedString = "";
             Benchmark = new VMBenchmark();
 
             //подписка на изменение коллекций
@@ -31,38 +32,36 @@ namespace WpfApp1
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         //обработчики изменения - поднимают событие изменения свойства
-        /////////////////////////
         void Handler_CollectionChanged_Time(object? sender, NotifyCollectionChangedEventArgs e) => RaisePropertyChanged(nameof(VMTime));
         void Handler_CollectionChanged_Ac(object? sender, NotifyCollectionChangedEventArgs e) => RaisePropertyChanged(nameof(VMAccuracy));
 
 
         //свойства
-        public VMF? SelectedFunc;
-        public VMTime? SelectedTime { get; set; }
-        public VMAccuracy? SelectedAccuracy { get; set; }
-
-
-        public VMBenchmark Benchmark;
-
+        public VMF? SelectedFunc { get; set; }
+        public VMBenchmark Benchmark { get; set; }
         public bool Changed = false;
-        public string ChangedString = "";
-        
+        public string ChangedString { get; set; }
+
 
         //добавить элемент в коллекцию времени
         public void AddVMTime(VMGrid grid)
         {
+
             try
             {
                 //здесь атвоматически поднимется PropertyCHanged в обработчике
                 Benchmark.AddVMTime((VMF)SelectedFunc, grid);
-                
+
+                //известить приложение
                 Changed = true;
-                ChangedString = "Collection has been Changed";
+                ChangedString = "Collection has been Changed"; 
                 RaisePropertyChanged(nameof(ChangedString));
+                Benchmark.RaisePropertyChanged(nameof(Benchmark.MinCoefsRatio));
+                
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                MessageBox.Show($"Exception:\n{e.Message}");
             }
         }
 
@@ -75,15 +74,17 @@ namespace WpfApp1
                 //здесь атвоматически поднимется PropertyCHanged в обработчике
                 Benchmark.AddVMAccuracy((VMF)SelectedFunc, grid);
 
+                //известить приложение
                 Changed = true;
                 ChangedString = "Collection has been Changed";
                 RaisePropertyChanged(nameof(ChangedString));
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                MessageBox.Show($"Exception:\n{e.Message}");
             }
         }
+
 
         //сохранить в файл
         public bool Save(string filename)
@@ -119,7 +120,10 @@ namespace WpfApp1
                         writer.WriteLine($"{item.MaxDifValue_VML_HA:0.00000000}");
                         writer.WriteLine($"{item.MaxDifValue_VML_EP:0.00000000}");
                     }
+                    //известить приложение
                     Changed = false;
+                    ChangedString = "Saved";
+                    RaisePropertyChanged(nameof(ChangedString));
                 }
             }
             catch (Exception e)
@@ -183,6 +187,11 @@ namespace WpfApp1
                         Benchmark.Accuracies.Add(item);
                     }
                 }
+                //известить приложение
+                Changed = false;
+                ChangedString = "Loaded";
+                RaisePropertyChanged(nameof(ChangedString));
+                Benchmark.RaisePropertyChanged(nameof(Benchmark.MinCoefsRatio));
             }
             catch (Exception e)
             {
