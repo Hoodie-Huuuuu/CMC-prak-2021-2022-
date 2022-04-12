@@ -99,7 +99,7 @@ namespace WpfApp1
                         writer.WriteLine(item.Params.Length);
                         writer.WriteLine($"{item.Params.Start:0.00000000}");
                         writer.WriteLine($"{item.Params.End:0.00000000}");
-                        writer.WriteLine($"{item.Params.Step:0.00000000}");
+                        
                         writer.WriteLine((int)item.FunctionType);
                         writer.WriteLine($"{item.VML_HA_Time:0.00000000}");
                         writer.WriteLine($"{item.VML_EP_Time:0.00000000}");
@@ -113,7 +113,7 @@ namespace WpfApp1
                         writer.WriteLine(item.Params.Length);
                         writer.WriteLine($"{item.Params.Start:0.00000000}");
                         writer.WriteLine($"{item.Params.End:0.00000000}");
-                        writer.WriteLine($"{item.Params.Step:0.00000000}");
+
                         writer.WriteLine((int)item.FunctionType);
                         writer.WriteLine($"{item.MaxDif:0.00000000}");
                         writer.WriteLine($"{item.MaxDifArg:0.00000000}");
@@ -150,9 +150,8 @@ namespace WpfApp1
                         int GridLength = Int32.Parse(reader.ReadLine());
                         double GridStart = double.Parse(reader.ReadLine());
                         double GridEnd = double.Parse(reader.ReadLine());
-                        double GridStep = double.Parse(reader.ReadLine());
                         
-                        VMGrid Grid = new VMGrid(GridLength, (float)GridStart, (float)GridEnd, (float)GridStep);
+                        VMGrid Grid = new VMGrid(GridLength, (float)GridStart, (float)GridEnd);
 
                         //параметры VMTime
                         VMF Function_type = (VMF)int.Parse(reader.ReadLine());
@@ -172,9 +171,8 @@ namespace WpfApp1
                         int GridLength = Int32.Parse(reader.ReadLine());
                         double GridStart = double.Parse(reader.ReadLine());
                         double GridEnd = double.Parse(reader.ReadLine());
-                        double GridStep = double.Parse(reader.ReadLine());
                         
-                        VMGrid Grid = new VMGrid(GridLength, (float)GridStart, (float)GridEnd, (float)GridStep);
+                        VMGrid Grid = new VMGrid(GridLength, (float)GridStart, (float)GridEnd);
 
                         //параметры VMAccuracy
                         VMF Function_type = (VMF)int.Parse(reader.ReadLine());

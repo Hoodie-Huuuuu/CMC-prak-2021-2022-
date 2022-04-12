@@ -9,12 +9,11 @@ namespace ClassLibrary1
 {
     public class VMGrid
     {
-        public VMGrid(int len, float start, float end, float step)
+        public VMGrid(int len, float start, float end)
         {
             Length = len;
             Start = start;
             End = end;
-            Step = step;
         }
 
         public VMGrid()
@@ -22,13 +21,12 @@ namespace ClassLibrary1
             Length = 100;
             Start = 0;
             End = 1;
-            Step = 0.01f;
         }
         //длина вектора аргументов функции
         public int Length { get; set; }
         public float Start { get; set; }
         public float End { get; set; }
-        public float Step { get; }
+        public float Step { get => (End - Start) / (Length-1); }
 
         public override string ToString()
         {
