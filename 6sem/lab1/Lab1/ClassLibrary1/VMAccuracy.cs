@@ -8,7 +8,7 @@ namespace ClassLibrary1
 {
     public class VMAccuracy
     {
-        public VMAccuracy(VMGrid grid, VMF func, double max_dif, double max_dif_arg, double ha, double ep)
+        public VMAccuracy(VMGrid grid, VMF func, float max_dif, float max_dif_arg, float ha, float ep)
         {
             Params = grid;
             FunctionType = func;
@@ -25,16 +25,16 @@ namespace ClassLibrary1
 
         //максимальное значение модуля разности значений, вычисленных
         //в режимах VML_HA и WML_EP;
-        public double MaxDif { get; set; }
+        public float MaxDif { get; set; }
 
         //свойство для значения аргумента функции, при котором максимально отличаются
         //значения функции, вычисленные в режимах VML_HA WML_EP
-        public double MaxDifArg { get; set; }
+        public float MaxDifArg { get; set; }
 
         //соответствующие значения функции при аргументе MaxDifArg
-        public double MaxDifValue_VML_HA { get; set; }
+        public float MaxDifValue_VML_HA { get; set; }
 
-        public double MaxDifValue_VML_EP { get; set; }
+        public float MaxDifValue_VML_EP { get; set; }
 
         public override string ToString() => Params.ToString() + $"name func: {NameFunc}";
         public static explicit operator String(VMAccuracy b) => b.ToString();

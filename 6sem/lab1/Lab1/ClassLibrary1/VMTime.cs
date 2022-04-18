@@ -7,7 +7,7 @@ namespace ClassLibrary1
     
 	public class VMTime
 	{
-		public VMTime(VMGrid grid, VMF func, double time_ha, double time, double time_ep, double coef_ha, double coef_ep)
+		public VMTime(VMGrid grid, VMF func, float time_ha, float time, float time_ep, float coef_ha, float coef_ep)
 		{
 			Params = grid;
 			FunctionType = func;
@@ -24,13 +24,13 @@ namespace ClassLibrary1
 		public VMF FunctionType { get; set; }
 
 		//свойства для времени вычисления
-		public double VML_HA_Time { get; set; }
-		public double VML_EP_Time { get; set; }
-		public double Time_c { get; set; }
+		public float VML_HA_Time { get; set; }
+		public float VML_EP_Time { get; set; }
+		public float Time_c { get; set; }
 
 		//  время mkl / время без mkl
-		public double VML_HA_Coef { get; set; }
-		public double VML_EP_Coef { get; set; }
+		public float VML_HA_Coef { get; set; }
+		public float VML_EP_Coef { get; set; }
 
 		public override string ToString() => Params.ToString() + $"name func: {NameFunc}";
 

@@ -148,18 +148,18 @@ namespace WpfApp1
                     {
                         //параметры сетки
                         int GridLength = Int32.Parse(reader.ReadLine());
-                        double GridStart = double.Parse(reader.ReadLine());
-                        double GridEnd = double.Parse(reader.ReadLine());
+                        float GridStart = float.Parse(reader.ReadLine());
+                        float GridEnd = float.Parse(reader.ReadLine());
                         
-                        VMGrid Grid = new VMGrid(GridLength, (float)GridStart, (float)GridEnd);
+                        VMGrid Grid = new VMGrid(GridLength, GridStart, GridEnd);
 
                         //параметры VMTime
                         VMF Function_type = (VMF)int.Parse(reader.ReadLine());
-                        var VML_HA_Time = double.Parse(reader.ReadLine());
-                        var VML_EP_Time = double.Parse(reader.ReadLine());
-                        var Time_c = double.Parse(reader.ReadLine());
-                        var VML_HA_Coef = double.Parse(reader.ReadLine());
-                        var VML_EP_Coef = double.Parse(reader.ReadLine());
+                        var VML_HA_Time = float.Parse(reader.ReadLine());
+                        var VML_EP_Time = float.Parse(reader.ReadLine());
+                        var Time_c = float.Parse(reader.ReadLine());
+                        var VML_HA_Coef = float.Parse(reader.ReadLine());
+                        var VML_EP_Coef = float.Parse(reader.ReadLine());
 
                         VMTime item = new VMTime(Grid, Function_type, VML_HA_Time, Time_c, VML_EP_Time, VML_HA_Coef, VML_EP_Coef);
                         Benchmark.TimeResults.Add(item);
@@ -169,17 +169,17 @@ namespace WpfApp1
                     {
                         //параметры сетки
                         int GridLength = Int32.Parse(reader.ReadLine());
-                        double GridStart = double.Parse(reader.ReadLine());
-                        double GridEnd = double.Parse(reader.ReadLine());
+                        float GridStart = float.Parse(reader.ReadLine());
+                        float GridEnd = float.Parse(reader.ReadLine());
                         
-                        VMGrid Grid = new VMGrid(GridLength, (float)GridStart, (float)GridEnd);
+                        VMGrid Grid = new VMGrid(GridLength, GridStart, GridEnd);
 
                         //параметры VMAccuracy
                         VMF Function_type = (VMF)int.Parse(reader.ReadLine());
-                        var MaxDif = double.Parse(reader.ReadLine());
-                        var MaxDifArg = double.Parse(reader.ReadLine());
-                        var MaxDifValue_VML_HA = double.Parse(reader.ReadLine());
-                        var MaxDifValue_VML_EP = double.Parse(reader.ReadLine());
+                        var MaxDif = float.Parse(reader.ReadLine());
+                        var MaxDifArg = float.Parse(reader.ReadLine());
+                        var MaxDifValue_VML_HA = float.Parse(reader.ReadLine());
+                        var MaxDifValue_VML_EP = float.Parse(reader.ReadLine());
 
                         VMAccuracy item = new VMAccuracy(Grid, Function_type, MaxDif, MaxDifArg, MaxDifValue_VML_HA, MaxDifValue_VML_EP);
                         Benchmark.Accuracies.Add(item);

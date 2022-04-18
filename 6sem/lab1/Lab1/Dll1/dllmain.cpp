@@ -23,9 +23,9 @@ public:
 };
 
 
-//=============================== Глобальная функция ==============================
+//=============================== Глобальная функция float ==============================
 extern "C"  _declspec(dllexport)
-int GlobalFunc(MKL_INT n_args, const double* args, double* res_mkl_ha, double* res_mkl_ep, double* res_c, double* res_time, int func)
+int GlobalFuncSingle(MKL_INT n_args, const float* args, float* res_mkl_ha, float* res_mkl_ep, float* res_c, float* res_time, int func)
 {
 	/*vmsExp = 0,
 	vmdExp = 1,
@@ -35,11 +35,11 @@ int GlobalFunc(MKL_INT n_args, const double* args, double* res_mkl_ha, double* r
 	switch (func) {
 	case 0:
 		t.reset();
-		vmsExp(n_args, (float*)args, (float*)res_mkl_ha, VML_HA);
+		vmsExp(n_args, args, res_mkl_ha, VML_HA);
 		res_time[0] = t.fix();
 
 		t.reset();
-		vmsExp(n_args, (float*)args, (float*)res_mkl_ep, VML_EP);
+		vmsExp(n_args, args, res_mkl_ep, VML_EP);
 		res_time[1] = t.fix();
 
 		t.reset();
@@ -48,6 +48,39 @@ int GlobalFunc(MKL_INT n_args, const double* args, double* res_mkl_ha, double* r
 		res_time[2] = t.fix();
 		return 0;
 		break;
+
+	case 2:
+		t.reset();
+		vmsErf(n_args, args, res_mkl_ha, VML_HA);
+		res_time[0] = t.fix();
+
+		t.reset();
+		vmsErf(n_args, args, res_mkl_ep, VML_EP);
+		res_time[1] = t.fix();
+
+		t.reset();
+		for (int i = 0; i < n_args; ++i)
+			res_c[i] = erf(args[i]);
+		res_time[2] = t.fix();
+		return 0;
+		break;
+	}
+
+	return -1;
+}
+
+
+
+//=============================== Глобальная функция double ==============================
+extern "C"  _declspec(dllexport)
+int GlobalFuncDouble(MKL_INT n_args, const double* args, double* res_mkl_ha, double* res_mkl_ep, double* res_c, double* res_time, int func)
+{
+	/*vmsExp = 0,
+	vmdExp = 1,
+	vmsErf = 2,
+	vmdErf = 3*/
+	Timer t;
+	switch (func) {
 
 	case 1:
 		t.reset();
@@ -61,22 +94,6 @@ int GlobalFunc(MKL_INT n_args, const double* args, double* res_mkl_ha, double* r
 		t.reset();
 		for (int i = 0; i < n_args; ++i)
 			res_c[i] = exp(args[i]);
-		res_time[2] = t.fix();
-		return 0;
-		break;
-
-	case 2:
-		t.reset();
-		vmsErf(n_args, (float*)args, (float*)res_mkl_ha, VML_HA);
-		res_time[0] = t.fix();
-
-		t.reset();
-		vmsErf(n_args, (float*)args, (float*)res_mkl_ep, VML_EP);
-		res_time[1] = t.fix();
-
-		t.reset();
-		for (int i = 0; i < n_args; ++i)
-			res_c[i] = erf(args[i]);
 		res_time[2] = t.fix();
 		return 0;
 		break;

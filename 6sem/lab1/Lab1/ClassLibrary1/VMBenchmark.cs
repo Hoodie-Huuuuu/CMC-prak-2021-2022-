@@ -28,75 +28,148 @@ namespace ClassLibrary1
         //ObservableCollection<VMTime> новый элемент VMTime;
         public void AddVMTime(VMF func_type, VMGrid grid)
         {
-           
-            //сетка 
-            double[] args = new double[grid.Length];
-            for (int i = 0; i < grid.Length; i++)
-                args[i] = grid.Start + grid.Step * i;
+            
+            int status = 0;
+            if (func_type == VMF.vmdErf || func_type == VMF.vmdExp)
+            {
+                //сетка 
+                double[] args = new double[grid.Length];
+                for (int i = 0; i < grid.Length; i++)
+                    args[i] = grid.Start + grid.Step * i;
 
-            //результаты
-            double[] res_mkl_ha = new double[grid.Length];
-            double[] res_mkl_ep = new double[grid.Length];
-            double[] res_c = new double[grid.Length];
-            double[] res_time = new double[3];
-            //вызов функции
-            int status = GlobalFunc(grid.Length, args, res_mkl_ha, res_mkl_ep,
+                //результаты
+                double[] res_mkl_ha = new double[grid.Length];
+                double[] res_mkl_ep = new double[grid.Length];
+                double[] res_c = new double[grid.Length];
+                double[] res_time = new double[3];
+
+                //вызов функции
+                status = GlobalFuncDouble(grid.Length, args, res_mkl_ha, res_mkl_ep,
                                                                 res_c, res_time, func_type);
+
+                //новый элемент VMTime
+                var VML_EP_Coef = res_time[1] / res_time[2];
+                var VML_HA_Coef = res_time[0] / res_time[2];
+
+                VMTime new_item = new VMTime(grid, func_type, (float)res_time[0], (float)res_time[2],
+                                             (float)res_time[1], (float)VML_HA_Coef, (float)VML_EP_Coef);
+
+                TimeResults.Add(new_item);
+            } 
+            else
+            {
+                //сетка 
+                float[] args = new float[grid.Length];
+                for (int i = 0; i < grid.Length; i++)
+                    args[i] = grid.Start + grid.Step * i;
+
+                //результаты
+                float[] res_mkl_ha = new float[grid.Length];
+                float[] res_mkl_ep = new float[grid.Length];
+                float[] res_c = new float[grid.Length];
+                float[] res_time = new float[3];
+
+                //вызов функции
+                status = GlobalFuncSingle(grid.Length, args, res_mkl_ha, res_mkl_ep,
+                                                                res_c, res_time, func_type);
+
+                var VML_EP_Coef = res_time[1] / res_time[2];
+                var VML_HA_Coef = res_time[0] / res_time[2];
+
+                VMTime new_item = new VMTime(grid, func_type, res_time[0], res_time[2],
+                                             res_time[1], VML_HA_Coef, VML_EP_Coef);
+
+                TimeResults.Add(new_item);
+            }
             if (status != 0) throw new Exception($"GlobalFunc failed");
 
-            //новый элемент VMTime
-            var VML_EP_Coef = res_time[1] / res_time[2];
-            var VML_HA_Coef = res_time[0] / res_time[2];
-
-            VMTime new_item = new VMTime(grid, func_type, res_time[0], res_time[2],
-                                         res_time[1], VML_HA_Coef, VML_EP_Coef);
-
-            TimeResults.Add(new_item);
-            //MessageBox.Show(grid.ToString());
             
 
         }
         [DllImport("..\\..\\..\\..\\x64\\Debug\\Dll1.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GlobalFunc(int n_args, double[] args, double[] res_mkl_ha,
-                                                        double[] res_mkl_ep, double[] res_c,
-                                                                double[] res_time, VMF func);
+        public static extern int GlobalFuncSingle(int n_args, float[] args, float[] res_mkl_ha,
+                                                        float[] res_mkl_ep, float[] res_c,
+                                                                float[] res_time, VMF func);
+        [DllImport("..\\..\\..\\..\\x64\\Debug\\Dll1.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GlobalFuncDouble(int n_args, double[] args, double[] res_mkl_ha,
+                                                       double[] res_mkl_ep, double[] res_c,
+                                                               double[] res_time, VMF func);
+
 
         //в этом методе выполняются вычисления, создается и
         //добавляется в коллекцию ObservableCollection<VMAccuracy> новый элемент
         //VMAccuracy;
         public void AddVMAccuracy(VMF func_type, VMGrid grid)
         {
-            //сетка 
-            double[] args = new double[grid.Length];
-            for (int i = 0; i < grid.Length; i++)
-                args[i] = grid.Start + grid.Step * i;
-
-            //результаты
-            double[] res_mkl_ha = new double[grid.Length];
-            double[] res_mkl_ep = new double[grid.Length];
-            double[] res_c = new double[grid.Length];
-            double[] res_time = new double[3];
-            //вызов функции
-            int status = GlobalFunc(grid.Length, args, res_mkl_ha, res_mkl_ep, 
-                                                                   res_c, res_time, func_type);
-            if (status != 0) throw new Exception($"GlobalFunc failed");
-
-            //новый элемент VMAccuracy
-            double MaxDif = 0;
-            int idx = 0;
-            for (int i = 0; i < grid.Length; ++i)
+            int status = 0;
+            if (func_type == VMF.vmdErf || func_type == VMF.vmdExp)
             {
-                double tmp = Math.Abs(res_mkl_ha[i] - res_mkl_ep[i]);
-                if (tmp > MaxDif)
-                {
-                    idx = i;
-                    MaxDif = tmp;
-                }
-            }
+                //сетка 
+                double[] args = new double[grid.Length];
+                for (int i = 0; i < grid.Length; i++)
+                    args[i] = grid.Start + grid.Step * i;
 
-            VMAccuracy new_item = new VMAccuracy(grid, func_type, MaxDif,
-                                                args[idx], res_mkl_ha[idx], res_mkl_ep[idx]);
-            Accuracies.Add(new_item);
+                //результаты
+                double[] res_mkl_ha = new double[grid.Length];
+                double[] res_mkl_ep = new double[grid.Length];
+                double[] res_c = new double[grid.Length];
+                double[] res_time = new double[3];
+                //вызов функции
+                status = GlobalFuncDouble(grid.Length, args, res_mkl_ha, res_mkl_ep,
+                                                                       res_c, res_time, func_type);
+                if (status != 0) throw new Exception($"GlobalFunc failed");
+
+                //новый элемент VMAccuracy
+                float MaxDif = 0;
+                int idx = 0;
+                for (int i = 0; i < grid.Length; ++i)
+                {
+                    float tmp = (float)Math.Abs(res_mkl_ha[i] - res_mkl_ep[i]);
+                    if (tmp > MaxDif)
+                    {
+                        idx = i;
+                        MaxDif = tmp;
+                    }
+                }
+
+                VMAccuracy new_item = new VMAccuracy(grid, func_type, MaxDif,
+                                                    (float)args[idx], (float)res_mkl_ha[idx], (float)res_mkl_ep[idx]);
+                Accuracies.Add(new_item);
+            }
+            else
+            {
+                //сетка 
+                float[] args = new float[grid.Length];
+                for (int i = 0; i < grid.Length; i++)
+                    args[i] = grid.Start + grid.Step * i;
+
+                //результаты
+                float[] res_mkl_ha = new float[grid.Length];
+                float[] res_mkl_ep = new float[grid.Length];
+                float[] res_c = new float[grid.Length];
+                float[] res_time = new float[3];
+                //вызов функции
+                status = GlobalFuncSingle(grid.Length, args, res_mkl_ha, res_mkl_ep,
+                                                                       res_c, res_time, func_type);
+                if (status != 0) throw new Exception($"GlobalFunc failed");
+
+                //новый элемент VMAccuracy
+                float MaxDif = 0;
+                int idx = 0;
+                for (int i = 0; i < grid.Length; ++i)
+                {
+                    float tmp = Math.Abs(res_mkl_ha[i] - res_mkl_ep[i]);
+                    if (tmp > MaxDif)
+                    {
+                        idx = i;
+                        MaxDif = tmp;
+                    }
+                }
+
+                VMAccuracy new_item = new VMAccuracy(grid, func_type, MaxDif,
+                                                    args[idx], res_mkl_ha[idx], res_mkl_ep[idx]);
+                Accuracies.Add(new_item);
+            }
         }
 
         //min коэфициент отоншения времен из всей коллекции
