@@ -1,0 +1,256 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="528" Width="1226" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <local:StrToSingle x:Key="StrSingle"/>
+        <local:StrToInt x:Key="StrInt"/>
+    </Window.Resources>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="local:CustomCommands.MeasuredData" CanExecute="MeasuredData_CanExecute" Executed="MeasuredData_Executed"/>
+        <CommandBinding Command="local:CustomCommands.Splines" CanExecute="Splines_CanExecute" Executed="Splines_Executed"/>
+    </Window.CommandBindings>
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+
+        </Grid.ColumnDefinitions>
+
+        <!--menu-->
+        <Menu x:Name="menu" Grid.ColumnSpan="3">
+            <MenuItem Header="Menu">
+                <MenuItem Header="MeasuredData" Command="local:CustomCommands.MeasuredData"/>
+                <MenuItem Header="Splines" Command="local:CustomCommands.Splines"/>
+            </MenuItem>
+
+            <Button Command="local:CustomCommands.MeasuredData">MeasuredData</Button>
+            <Button Command="local:CustomCommands.Splines">Splines</Button>
+        </Menu>
+
+
+        <Grid Grid.Column="2">
+            <!--Choose Function-->
+            <ComboBox Name ="Func_list" Margin="60,29,48,440" IsSynchronizedWithCurrentItem="True"
+				  SelectedItem="{Binding Path=sd.md.Function}" />
+            <TextBlock HorizontalAlignment="Center" Height="19" Margin="0,10,0,0"
+				   TextWrapping="Wrap" VerticalAlignment="Top" Width="124" >
+			<Run Language="ru-ru" Text="   Выберете функцию"/>
+            </TextBlock>
+
+            <!--Measured Data-->
+            <TextBlock HorizontalAlignment="Center" Height="19" Margin="0,77,0,0" TextWrapping="Wrap"
+				   VerticalAlignment="Top" Width="157" RenderTransformOrigin="0.509,0.476">
+			<Run Language="ru-ru" Text="      Измеренные данные"/>
+            </TextBlock>
+
+            <Border BorderBrush="Black" BorderThickness="1" Margin="28,96,16,297">
+                <Grid HorizontalAlignment="Center"  Height="142" VerticalAlignment="Center" Width="254">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="53*"/>
+                        <RowDefinition Height="18*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Left border-->
+                    <TextBlock HorizontalAlignment="Left" Height="18" Margin="10,20,0,0"
+						   TextWrapping="Wrap" VerticalAlignment="Top" Width="88">
+					<Run Language="ru-ru" Text="Левая граница"/>
+                    </TextBlock>
+                    <TextBox  HorizontalAlignment="Left" Height="20" Margin="10,38,0,0" TextWrapping="Wrap"
+						  Text="{Binding Path = sd.md.Left_border, Mode = TwoWay, Converter = {StaticResource StrSingle}, ValidatesOnDataErrors=True}"
+						  VerticalAlignment="Top" Width="88"  />
+
+                    <!--Right border-->
+                    <TextBlock HorizontalAlignment="Left" Height="18" Margin="146,20,0,0"
+						   TextWrapping="Wrap" VerticalAlignment="Top" Width="98">
+					<Run Language="ru-ru" Text="Правая граница"/>
+                    </TextBlock>
+                    <TextBox  HorizontalAlignment="Left" Height="20" Margin="146,38,0,0" TextWrapping="Wrap"
+						  Text="{Binding Path = sd.md.Right_border, Mode = TwoWay, Converter = {StaticResource StrSingle}, ValidatesOnDataErrors=True}"
+						  VerticalAlignment="Top" Width="98" />
+
+                    <!--Num of Nodes-->
+                    <TextBlock HorizontalAlignment="Center" Height="17" Margin="0,58,0,0"
+						   TextWrapping="Wrap" VerticalAlignment="Top" Width="88">
+					<Run Language="ru-ru" Text="   "/>
+					<Run Text="Число узлов"/>
+                    </TextBlock>
+                    <TextBox  HorizontalAlignment="Center" Height="21" Margin="0,75,0,0" TextWrapping="Wrap"
+						  Text="{Binding Path = sd.md.Length, Mode = TwoWay, Converter = {StaticResource StrInt}, ValidatesOnDataErrors=True}"
+						  VerticalAlignment="Top" Width="88"/>
+                </Grid>
+            </Border>
+
+            <!--Spline Parameters-->
+            <TextBlock HorizontalAlignment="Center" Height="22" Margin="0,261,0,0"
+				   TextWrapping="Wrap" VerticalAlignment="Top" Width="157" RenderTransformOrigin="0.494,1.331">
+			<Run Language="ru-ru" Text="   Параметры сплайнов"/>
+            </TextBlock>
+
+            <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left"
+				Height="184" Margin="22,288,0,0" VerticalAlignment="Top" Width="274">
+
+                <Grid Margin="0,9,0,-9">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30*"/>
+                        <RowDefinition Height="23*"/>
+                        <RowDefinition Height="64*"/>
+                        <RowDefinition Height="66*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Spline Num Nodes-->
+                    <TextBlock HorizontalAlignment="Left" Height="19" Margin="10,-2,0,0"
+                           TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="0" Width="97">
+		            <Run Language="ru-ru" Text="Число узлов:"/>
+                    </TextBlock>
+                    <TextBox  HorizontalAlignment="Left" Height="21" Grid.Row="0"
+                              Margin="96,0,0,0" TextWrapping="Wrap"
+                              Text = "{Binding Path = sp.Length, Converter = {StaticResource StrInt}, ValidatesOnDataErrors=True, Mode = TwoWay}"
+                              VerticalAlignment="Top" Width="74" />
+
+                    <!--Borders-->
+                    <TextBlock HorizontalAlignment="Center" Height="18"
+                           TextWrapping="Wrap" VerticalAlignment="Top" Width="220" Grid.Row="1">
+		            <Run Language="ru-ru" Text="Граничные условия 2ой производной:"/>
+                    </TextBlock>
+
+
+                    <!--spline 1-->
+                    <TextBlock HorizontalAlignment="Center"
+			                    TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="2" RenderTransformOrigin="0,0.488">
+		                        <Run Language="ru-ru" Text="Сплайн 1"/>
+                    </TextBlock>
+
+                    <!--Left border 1-->
+                    <TextBlock HorizontalAlignment="Left" Height="20"
+				               TextWrapping="Wrap" VerticalAlignment="Top" 
+                               Grid.Row="2" Width="82" Margin="18,19,0,0">
+		                <Run Language="ru-ru" Text="Левая граница"/>
+                    </TextBlock>
+                    <TextBox  HorizontalAlignment="Left" Height="20" Margin="18,39,0,0" TextWrapping="Wrap"
+                              Text = "{Binding Path = sp.First_spline_left_border_derivative, Converter = {StaticResource StrSingle}, Mode = TwoWay}"
+                              VerticalAlignment="Top" Width="82" Grid.Row="2"/>
+
+                    <!--Right border 1-->
+                    <TextBlock HorizontalAlignment="Left" Height="20" Margin="168,0,0,0"
+			                   TextWrapping="Wrap" VerticalAlignment="Center" Width="94"
+                               Grid.Row="2">
+                               
+		                <Run Language="ru-ru" Text="Правая граница"/>
+                    </TextBlock>
+                    <TextBox  HorizontalAlignment="Left" Height="20" Margin="172,39,0,0"
+                              TextWrapping="Wrap" Grid.Row="2"
+                              Text = "{Binding Path = sp.First_spline_right_border_derivative, Converter = {StaticResource StrSingle}, Mode = TwoWay}"
+                              VerticalAlignment="Top" Width="86"/>
+
+
+                    <!--spline 2-->
+                    <TextBlock HorizontalAlignment="Center" Height="18" Margin="0"
+			                   TextWrapping="Wrap" VerticalAlignment="Top"
+                               Grid.Row="3">
+		                <Run Language="ru-ru" Text="Сплайн 2"/>
+                    </TextBlock>
+
+                    <!--Left border 2-->
+                    <TextBlock HorizontalAlignment="Left"
+			                   TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="3" Margin="18,17,0,0">
+		                <Run Language="ru-ru" Text="Левая граница"/>
+                    </TextBlock>
+                    <TextBox  HorizontalAlignment="Left" Height="20" Margin="18,36,0,0"
+                              TextWrapping="Wrap" Grid.Row="3" Width="82"
+                              Text = "{Binding Path = sp.Second_spline_left_border_derivative, Converter = {StaticResource StrSingle}, Mode = TwoWay}"
+                              VerticalAlignment="Top"/>
+
+                    <!--Right border 2-->
+                    <TextBlock HorizontalAlignment="Left" Height="19"
+			                   TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="3" Margin="171,17,0,0">
+		                <Run Language="ru-ru" Text="Правая граница"/>
+                    </TextBlock>
+                    <TextBox  HorizontalAlignment="Left" Height="20"
+                              Grid.Row="3" TextWrapping="Wrap"
+                              Text = "{Binding Path = sp.Second_spline_right_border_derivative, Converter = {StaticResource StrSingle}, Mode = TwoWay}"
+                              VerticalAlignment="Top" Width="86" Margin="172,36,0,0"/>
+                </Grid>
+            </Border>
+
+
+        </Grid>
+
+        <!--Measured Data-->
+        <ListBox HorizontalAlignment="Left" Height="141" Margin="44,60,0,0"
+                 VerticalAlignment="Top" Width="367" ItemsSource="{Binding MeasuredData}"
+                 IsSynchronizedWithCurrentItem="True"
+                 SelectionChanged="ListBox_SelectionChanged"
+                 Grid.Column="0"/>
+        <TextBlock HorizontalAlignment="Left" 
+                   TextWrapping="Wrap" Text="Измеренные данные"
+                   VerticalAlignment="Top" RenderTransformOrigin="0.509,0.476"
+                   Margin="170,39,0,0"/>
+
+        <!--Splines Values-->
+        <TextBlock HorizontalAlignment="Left" 
+                   TextWrapping="Wrap" Text="Значения сплайнов"
+                   VerticalAlignment="Top" RenderTransformOrigin="0.509,0.476"
+                   Margin="170,220,0,0"/>
+
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left"
+                Height="230" Margin="44,241,0,0" VerticalAlignment="Top" Width="380">
+
+            <Grid HorizontalAlignment="Center" Height="234" VerticalAlignment="Center" Width="366">
+                <!--spline values 1-->
+                <ListBox HorizontalAlignment="Left" Height="84" Margin="0,32,0,0"
+                         VerticalAlignment="Top" Width="176"
+                         ItemsSource="{Binding Path=SplineValues1}"
+                         IsSynchronizedWithCurrentItem="True"/>
+                <TextBlock HorizontalAlignment="Left" Height="22" Margin="63,10,0,0"
+                           TextWrapping="Wrap" VerticalAlignment="Top">
+				    <Run Language="ru-ru" Text="Сплайн 1"/>
+                </TextBlock>
+
+                <!--spline values 2-->
+                <TextBlock HorizontalAlignment="Left" Height="22" Margin="254,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+				    <Run Language="ru-ru" Text="Сплайн 2"/>
+                </TextBlock>
+                <ListBox HorizontalAlignment="Left" Height="84" Margin="192,32,0,0"
+                         VerticalAlignment="Top" Width="174"
+                         ItemsSource="{Binding Path=SplineValues2}"
+                         IsSynchronizedWithCurrentItem="True"/>
+
+                <!--spline der 1-->
+                <ListBox HorizontalAlignment="Left" Height="66" Margin="0,158,0,0"
+                         VerticalAlignment="Top" Width="176"
+                         ItemsSource="{Binding Path=Derivatives1}"
+                         IsSynchronizedWithCurrentItem="True"/>
+
+                <TextBlock HorizontalAlignment="Center" Margin="0,137,0,0"
+                           TextWrapping="Wrap" VerticalAlignment="Top">
+				    <Run Language="ru-ru" Text="Производные"/>
+                </TextBlock>
+
+                <!--spline der 2-->
+                <ListBox HorizontalAlignment="Left" Height="66" Margin="192,158,0,0"
+                         VerticalAlignment="Top" Width="174"
+                         ItemsSource="{Binding Path=Derivatives2}"
+                         IsSynchronizedWithCurrentItem="True"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Name ="Oxyplot"
+              HorizontalAlignment="Left" 
+              VerticalAlignment="Top">
+            <oxy:PlotView x:Name="plotView" Model="{Binding plotModel}"
+                          Height="472" VerticalAlignment="Center" Margin="0,0,-447,0" />
+        </Grid>
+    </Grid>
+
+</Window>
