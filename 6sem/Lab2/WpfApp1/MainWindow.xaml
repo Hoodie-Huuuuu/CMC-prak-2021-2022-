@@ -49,47 +49,47 @@
             </TextBlock>
 
             <!--Measured Data-->
-            <TextBlock HorizontalAlignment="Center" Height="19" Margin="0,77,0,0" TextWrapping="Wrap"
+            <TextBlock HorizontalAlignment="Center" Height="19" Margin="0,95,0,0" TextWrapping="Wrap"
 				   VerticalAlignment="Top" Width="157" RenderTransformOrigin="0.509,0.476">
 			<Run Language="ru-ru" Text="      Измеренные данные"/>
             </TextBlock>
 
-            <Border BorderBrush="Black" BorderThickness="1" Margin="28,96,16,297">
-                <Grid HorizontalAlignment="Center"  Height="142" VerticalAlignment="Center" Width="254">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="53*"/>
-                        <RowDefinition Height="18*"/>
-                    </Grid.RowDefinitions>
+            <!--Border BorderBrush="Black" BorderThickness="1" Margin="28,96,16,297"-->
+            <Grid HorizontalAlignment="Center"  Height="142" VerticalAlignment="Top" Width="254" Margin="0,119,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="53*"/>
+                    <RowDefinition Height="18*"/>
+                </Grid.RowDefinitions>
 
-                    <!--Left border-->
-                    <TextBlock HorizontalAlignment="Left" Height="18" Margin="10,20,0,0"
+                <!--Left border-->
+                <TextBlock HorizontalAlignment="Left" Height="18" Margin="10,20,0,0"
 						   TextWrapping="Wrap" VerticalAlignment="Top" Width="88">
 					<Run Language="ru-ru" Text="Левая граница"/>
-                    </TextBlock>
-                    <TextBox  HorizontalAlignment="Left" Height="20" Margin="10,38,0,0" TextWrapping="Wrap"
+                </TextBlock>
+                <TextBox  HorizontalAlignment="Left" Height="20" Margin="10,38,0,0" TextWrapping="Wrap"
 						  Text="{Binding Path = sd.md.Left_border, Mode = TwoWay, Converter = {StaticResource StrSingle}, ValidatesOnDataErrors=True}"
 						  VerticalAlignment="Top" Width="88"  />
 
-                    <!--Right border-->
-                    <TextBlock HorizontalAlignment="Left" Height="18" Margin="146,20,0,0"
+                <!--Right border-->
+                <TextBlock HorizontalAlignment="Left" Height="18" Margin="146,20,0,0"
 						   TextWrapping="Wrap" VerticalAlignment="Top" Width="98">
 					<Run Language="ru-ru" Text="Правая граница"/>
-                    </TextBlock>
-                    <TextBox  HorizontalAlignment="Left" Height="20" Margin="146,38,0,0" TextWrapping="Wrap"
+                </TextBlock>
+                <TextBox  HorizontalAlignment="Left" Height="20" Margin="146,38,0,0" TextWrapping="Wrap"
 						  Text="{Binding Path = sd.md.Right_border, Mode = TwoWay, Converter = {StaticResource StrSingle}, ValidatesOnDataErrors=True}"
 						  VerticalAlignment="Top" Width="98" />
 
-                    <!--Num of Nodes-->
-                    <TextBlock HorizontalAlignment="Center" Height="17" Margin="0,58,0,0"
+                <!--Num of Nodes-->
+                <TextBlock HorizontalAlignment="Center" Height="17" Margin="0,58,0,0"
 						   TextWrapping="Wrap" VerticalAlignment="Top" Width="88">
 					<Run Language="ru-ru" Text="   "/>
 					<Run Text="Число узлов"/>
-                    </TextBlock>
-                    <TextBox  HorizontalAlignment="Center" Height="21" Margin="0,75,0,0" TextWrapping="Wrap"
+                </TextBlock>
+                <TextBox  HorizontalAlignment="Center" Height="21" Margin="0,75,0,0" TextWrapping="Wrap"
 						  Text="{Binding Path = sd.md.Length, Mode = TwoWay, Converter = {StaticResource StrInt}, ValidatesOnDataErrors=True}"
 						  VerticalAlignment="Top" Width="88"/>
-                </Grid>
-            </Border>
+            </Grid>
+            <!--/Border-->
 
             <!--Spline Parameters-->
             <TextBlock HorizontalAlignment="Center" Height="22" Margin="0,261,0,0"
@@ -203,47 +203,45 @@
                    VerticalAlignment="Top" RenderTransformOrigin="0.509,0.476"
                    Margin="170,220,0,0"/>
 
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left"
-                Height="230" Margin="44,241,0,0" VerticalAlignment="Top" Width="380">
 
-            <Grid HorizontalAlignment="Center" Height="234" VerticalAlignment="Center" Width="366">
-                <!--spline values 1-->
-                <ListBox HorizontalAlignment="Left" Height="84" Margin="0,32,0,0"
+
+        <Grid HorizontalAlignment="Left" Height="234" VerticalAlignment="Top" Width="366" Margin="45,236,0,0">
+            <!--spline values 1-->
+            <ListBox HorizontalAlignment="Left" Height="84" Margin="0,32,0,0"
                          VerticalAlignment="Top" Width="176"
                          ItemsSource="{Binding Path=SplineValues1}"
                          IsSynchronizedWithCurrentItem="True"/>
-                <TextBlock HorizontalAlignment="Left" Height="22" Margin="63,10,0,0"
+            <TextBlock HorizontalAlignment="Left" Height="22" Margin="63,10,0,0"
                            TextWrapping="Wrap" VerticalAlignment="Top">
 				    <Run Language="ru-ru" Text="Сплайн 1"/>
-                </TextBlock>
+            </TextBlock>
 
-                <!--spline values 2-->
-                <TextBlock HorizontalAlignment="Left" Height="22" Margin="254,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+            <!--spline values 2-->
+            <TextBlock HorizontalAlignment="Left" Height="22" Margin="254,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
 				    <Run Language="ru-ru" Text="Сплайн 2"/>
-                </TextBlock>
-                <ListBox HorizontalAlignment="Left" Height="84" Margin="192,32,0,0"
+            </TextBlock>
+            <ListBox HorizontalAlignment="Left" Height="84" Margin="192,32,0,0"
                          VerticalAlignment="Top" Width="174"
                          ItemsSource="{Binding Path=SplineValues2}"
                          IsSynchronizedWithCurrentItem="True"/>
 
-                <!--spline der 1-->
-                <ListBox HorizontalAlignment="Left" Height="66" Margin="0,158,0,0"
+            <!--spline der 1-->
+            <ListBox HorizontalAlignment="Left" Height="66" Margin="0,158,0,0"
                          VerticalAlignment="Top" Width="176"
                          ItemsSource="{Binding Path=Derivatives1}"
                          IsSynchronizedWithCurrentItem="True"/>
 
-                <TextBlock HorizontalAlignment="Center" Margin="0,137,0,0"
+            <TextBlock HorizontalAlignment="Center" Margin="0,137,0,0"
                            TextWrapping="Wrap" VerticalAlignment="Top">
 				    <Run Language="ru-ru" Text="Производные"/>
-                </TextBlock>
+            </TextBlock>
 
-                <!--spline der 2-->
-                <ListBox HorizontalAlignment="Left" Height="66" Margin="192,158,0,0"
+            <!--spline der 2-->
+            <ListBox HorizontalAlignment="Left" Height="66" Margin="192,158,0,0"
                          VerticalAlignment="Top" Width="174"
                          ItemsSource="{Binding Path=Derivatives2}"
                          IsSynchronizedWithCurrentItem="True"/>
-            </Grid>
-        </Border>
+        </Grid>
 
         <Grid Grid.Column="1" Name ="Oxyplot"
               HorizontalAlignment="Left" 

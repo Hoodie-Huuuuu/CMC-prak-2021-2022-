@@ -18,77 +18,7 @@ using ClassLibrary1;
 namespace WpfApp1
 {
 
-    //Перевод из строки в double и наоборот
-    public class StrToSingle : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                string s;
-                if (value.GetType() == typeof(double))
-                {
-                    s = ((double)value).ToString();
-                }
-                else
-                {
-                    s = ((float)value).ToString();
-                }
-                return s;
-            }
-            catch
-            {
-                MessageBox.Show("Не удалось перевести число в строку");
-                return null;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                double x = Calculation.ToSingle((string)value);
-                return x;
-            }
-            catch
-            {
-                MessageBox.Show("Не удалось перевести строку в число");
-                return null;
-            }
-        }
-    }
-
-    //Перевод из строки в int и наоборот
-    public class StrToInt : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                string s = ((int)value).ToString();
-                return s;
-            }
-            catch
-            {
-                MessageBox.Show("Не удалось перевести число в строку");
-                return null;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                int x = Int32.Parse((string)value);
-                return x;
-            }
-            catch
-            {
-                MessageBox.Show("Не удалось перевести строку в число");
-                return null;
-            }
-        }
-    }
+   
 
     public partial class MainWindow : Window
     {
@@ -168,11 +98,11 @@ namespace WpfApp1
 
                 
 
-                viewdata.Derivatives1.Add($"Left second derivative: {viewdata.sp.First_spline_left_border_derivative}");
-                viewdata.Derivatives1.Add($"Right second derivative: {viewdata.sp.First_spline_right_border_derivative}");
+                viewdata.Derivatives1.Add($"Левая граница: {viewdata.sp.First_spline_left_border_derivative}");
+                viewdata.Derivatives1.Add($"Правая граница: {viewdata.sp.First_spline_right_border_derivative}");
 
-                viewdata.Derivatives2.Add($"Left second derivative: {viewdata.sp.Second_spline_left_border_derivative}");
-                viewdata.Derivatives2.Add($"Right second derivative: {viewdata.sp.Second_spline_right_border_derivative}");
+                viewdata.Derivatives2.Add($"Левая граница: {viewdata.sp.Second_spline_left_border_derivative}");
+                viewdata.Derivatives2.Add($"Правая граница: {viewdata.sp.Second_spline_right_border_derivative}");
 
                 viewdata.SplineValues1.Add($"a: {viewdata.sd.values_spline_first[0]}");
                 viewdata.SplineValues1.Add($"a + h: {viewdata.sd.values_spline_first[1]}");
@@ -229,6 +159,78 @@ namespace WpfApp1
                     new KeyGesture(Key.D2, ModifierKeys.Control)
                 }
             );
+    }
+
+    //Перевод из строки в double и наоборот
+    public class StrToSingle : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                string s;
+                if (value.GetType() == typeof(double))
+                {
+                    s = ((double)value).ToString();
+                }
+                else
+                {
+                    s = ((float)value).ToString();
+                }
+                return s;
+            }
+            catch
+            {
+                MessageBox.Show("Неправильный формат данных (ожидалось число)");
+                return null;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                double x = Calculation.ToSingle((string)value);
+                return x;
+            }
+            catch
+            {
+                MessageBox.Show("Неправильный формат данных (ожидалось число)");
+                return null;
+            }
+        }
+    }
+
+    //Перевод из строки в int и наоборот
+    public class StrToInt : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                string s = ((int)value).ToString();
+                return s;
+            }
+            catch
+            {
+                MessageBox.Show("Неправильный формат данных (ожидалось целое число)");
+                return null;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                int x = Int32.Parse((string)value);
+                return x;
+            }
+            catch
+            {
+                MessageBox.Show("Неправильный формат данных (ожидалось целое число)");
+                return null;
+            }
+        }
     }
 
 }

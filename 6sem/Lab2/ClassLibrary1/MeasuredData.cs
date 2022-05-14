@@ -62,7 +62,7 @@ namespace ClassLibrary1
             }
             catch
             {
-                throw new Exception("Не удалось инициализировать MeasuredData");
+                throw new Exception("MeasuredData не инициализировалось");
             }
         }
         //Конструктор
@@ -88,13 +88,13 @@ namespace ClassLibrary1
                     case "Right_border":
                         if (this.Left_border >= this.Right_border )
                         {
-                            msg = "Left border > Right border";
+                            msg = "Правая граница должна быть больше левой";
                         }
                         break;
                     case "Left_border":
                         if (this.Left_border >= this.Right_border)
                         {
-                            msg = "Left border > Right border";
+                            msg = "Левая граница должна быть меньше правой";
                         }
                         break;
                     case "Length":

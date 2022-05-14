@@ -12,7 +12,7 @@ namespace WpfApp1
         public OxyPlotModel(ChartData data)
         {
             this.data = data;
-            this.plotModel = new PlotModel { Title = "График" };
+            this.plotModel = new PlotModel { Title = "Интерполяция" };
             this.plotModel.Series.Clear();
         }
         public OxyPlotModel()
